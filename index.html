@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jurnal Harian & Absensi Relawan</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 0 20px;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+    header {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    h1 { margin: 0 0 6px 0; color: var(--text-main); font-size: 1.5rem; }
+    p.subtitle { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+    
+    .card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .date {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status {
+      padding: 3px 10px;
+      background: #e0e7ff;
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    /* Kamera & Output Styling */
+    .camera-container {
+      margin-top: 15px;
+      text-align: center;
+      background: #0f172a;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    video, canvas {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      display: block;
+    }
+    canvas { display: none; }
+    
+    .controls {
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.8);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--primary-hover); }
+    button.secondary { background: #475569; }
+    button.secondary:hover { background: #334155; }
+
+    .photo-preview {
+      margin-top: 12px;
+      text-align: center;
+    }
+    .photo-preview img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Jurnal Harian Relawan</h1>
+    <p class="subtitle">Dokumentasi & Presensi Kehadiran Lapangan</p>
+  </header>
+
+  <div class="card">
+    <div class="date">
+      <span>Senin, 10 Agustus 2026</span>
+      <span class="status">Hadir</span>
+    </div>
+
+    <label>Aktivitas Hari Ini:</label>
+    <textarea rows="3" placeholder="Tuliskan kegiatanmu hari ini..."></textarea>
+
+    <label>Bukti Foto Kehadiran (Live Camera):</label>
+    
+    <!-- Tombol Memicu Kamera -->
+    <div style="margin-top: 6px;" id="camera-section">
+      <button type="button" onclick="startCamera()">Buka Kamera Live</button>
+    </div>
+
+    <!-- Area Video Streaming Kamera -->
+    <div class="camera-container" id="video-wrapper" style="display:none;">
+      <video id="video" autoplay playsinline></video>
+      <div class="controls">
+        <button type="button" onclick="takeSnapshot()">Ambil Foto</button>
+        <button type="button" class="secondary" onclick="stopCamera()">Tutup</button>
+      </div>
+    </div>
+
+    <!-- Canvas Tersembunyi untuk Proses Gambar -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Hasil Foto Tersimpan -->
+    <div class="photo-preview" id="preview-container" style="display:none;">
+      <p style="font-size: 0.8rem; color: #16a34a; font-weight: 600; margin-bottom: 6px;">✓ Foto berhasil diambil dari kamera</p>
+      <img id="photo" alt="Hasil Foto Absensi">
+      <br>
+      <button type="button" class="secondary" style="margin-top: 8px; font-size: 0.8rem; padding: 6px 12px;" onclick="retakePhoto()">Ulangi Foto</button>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    const videoWrapper = document.getElementById('video-wrapper');
+    const cameraSection = document.getElementById('camera-section');
+    const previewContainer = document.getElementById('preview-container');
+    let streamInstance = null;
+
+    // Fungsi Menyalakan Kamera HP/Laptop
+    async function startCamera() {
+      cameraSection.style.display = 'none';
+      videoWrapper.style.display = 'block';
+      try {
+        streamInstance = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'user' }, // 'user' untuk kamera depan, ganti 'environment' kalau mau default kamera belakang HP
+          audio: false 
+        });
+        video.srcObject = streamInstance;
+      } catch (err) {
+        alert("Gagal membuka kamera. Pastikan kamu memberi izin (permission) akses kamera di browser!");
+        stopCamera();
+      }
+    }
+
+    // Fungsi Mengambil Jepretan Foto
+    function takeSnapshot() {
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Ubah gambar ke format Base64 supaya langsung tampil
+      const dataUrl = canvas.toDataURL('image/png');
+      photo.setAttribute('src', dataUrl);
+      
+      stopCamera();
+      videoWrapper.style.display = 'none';
+      previewContainer.style.display = 'block';
+    }
+
+    // Fungsi Mematikan Aliran Kamera
+    function stopCamera() {
+      if (streamInstance) {
+        streamInstance.getTracks().forEach(track => track.stop());
+        streamInstance = null;
+      }
+      videoWrapper.style.display = 'none';
+      if(photo.getAttribute('src')) {
+        previewContainer.style.display = 'block';
+      } else {
+        cameraSection.style.display = 'block';
+      }
+    }
+
+    // Fungsi Mengulang Foto
+    function retakePhoto() {
+      photo.setAttribute('src', '');
+      previewContainer.style.display = 'none';
+      startCamera();
+    }
+  </script>
+
+</body>
+</html>

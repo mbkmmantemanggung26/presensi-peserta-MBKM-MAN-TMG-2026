@@ -131,12 +131,10 @@
   <div class="card">
     <h3 style="margin-top:0;">Form Absensi Harian</h3>
     
-    <!-- PEMBERITAHUAN MINGGU/AHAD -->
     <div id="noticeLibur" class="notice-libur">
       🔴 Hari ini Ahad / Minggu (Hari Libur). Form presensi ditutup.
     </div>
 
-    <!-- HARI & TANGGAL OTOMATIS (READONLY) -->
     <div class="form-group">
       <label>Hari & Tanggal Presensi:</label>
       <input type="text" id="tanggalOtomatis" readonly>
@@ -156,7 +154,7 @@
         <option value="Safira Anindya Putri" data-email="safira@gmail.com">Safira Anindya Putri</option>
         <option value="Nabila Salma Kasih Muwuro" data-email="nabila@gmail.com">Nabila Salma Kasih Muwuro</option>
         <option value="Miftahur Rohmah" data-email="miftah@gmail.com">Miftahur Rohmah</option>
-        <option value="Ipul" data-email="ipul@gmail.com">Ipul</option>
+        <option value="Ipul" data-email="ipul@gmail.com">Moh. Syaiful Umam</option>
       </select>
     </div>
 
@@ -197,13 +195,11 @@
   </div>
 
   <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT JIKA ADA
     const GOOGLE_SCRIPT_URL = ""; 
 
     let streamInstance = null;
     let fotoBase64 = "";
 
-    // TANGGAL OTOMATIS & CEK HARI MINGGU
     window.onload = function() {
       const sekarang = new Date();
       const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -211,7 +207,6 @@
       
       document.getElementById('tanggalOtomatis').value = tanggalFormat;
 
-      // Jika Hari Minggu (0 = Ahad)
       if (sekarang.getDay() === 0) {
         document.getElementById('noticeLibur').style.display = 'block';
         document.getElementById('btnKirim').disabled = true;
@@ -268,7 +263,6 @@
       const jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const tglLengkap = `${tanggal} (${jam} WIB)`;
 
-      // 1. Tampilkan di Riwayat Halaman secara Lokal
       const html = `
         <div class="entry-card">
           <div class="entry-header">
@@ -281,7 +275,6 @@
       `;
       document.getElementById('riwayatList').insertAdjacentHTML('afterbegin', html);
 
-      // 2. Kirim ke Google Sheets (jika URL sudah diisi)
       if (GOOGLE_SCRIPT_URL !== "") {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
@@ -289,7 +282,6 @@
         }).catch(err => console.log("Gagal mengirim ke Google Sheets"));
       }
 
-      // Reset Form
       document.getElementById('jurnal').value = '';
       document.getElementById('namaAnggota').value = '';
       document.getElementById('emailAnggota').value = '';

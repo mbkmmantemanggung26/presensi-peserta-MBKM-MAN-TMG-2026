@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presensi MBKM MAN TMG 2026</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 16px;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    h1 { margin: 0 0 6px 0; font-size: 1.4rem; }
+    p { margin: 0; color: #64748b; font-size: 0.9rem; }
+    
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; }
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    /* Camera Section */
+    .camera-box {
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      margin-top: 8px;
+    }
+    video, canvas { width: 100%; max-height: 300px; object-fit: cover; }
+    canvas { display: none; }
+    
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn-secondary { background: #64748b; }
+    
+    /* Daftar Riwayat Absensi */
+    .entry-card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 10px;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .entry-photo {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Presensi & Jurnal MBKM MAN TMG 2026</h1>
+    <p>Kelompok 11 Anggota</p>
+  </header>
+
+  <!-- FORM INPUT PRESENSI -->
+  <div class="card">
+    <h3 style="margin-top:0;">Form Absensi Harian</h3>
+    
+    <div class="form-group">
+      <label>Pilih Nama Anggota:</label>
+      <select id="namaAnggota">
+        <option value="">-- Pilih Nama Kamu --</option>
+        <!-- GANTI NAMA-NAMA ANGGOTA DI SINI -->
+        <option value="Anggota 1">Haura</option>
+        <option value="Anggota 2">Nabilla</option>
+        <option value="Anggota 3">Safira</option>
+        <option value="Anggota 4">Yusuf</option>
+        <option value="Anggota 5">Imam</option>
+        <option value="Anggota 6">Given</option>
+        <option value="Anggota 7">Qonita</option>
+        <option value="Anggota 8">Safira</option>
+        <option value="Anggota 9">Asa</option>
+        <option value="Anggota 10">Mita</option>
+        <option value="Anggota 11">Ipul</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Catatan Kegiatan / Jurnal Harian:</label>
+      <textarea id="jurnal" rows="3" placeholder="Apa yang dikerjakan hari ini..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Bukti Foto (Live Camera):</label>
+      <button class="btn btn-secondary" type="button" id="btnKamera" onclick="startCamera()">Buka Kamera Live</button>
+      
+      <div class="camera-box" id="camBox" style="display:none;">
+        <video id="video" autoplay playsinline></video>
+        <button class="btn" type="button" onclick="takeSnapshot()">Ambil Foto</button>
+      </div>
+      
+      <canvas id="canvas"></canvas>
+      
+      <div id="previewBox" style="display:none; text-align:center; margin-top:8px;">
+        <img id="photoResult" class="entry-photo" src="" alt="Hasil Foto">
+        <p style="color:#16a34a; font-size:0.8rem; font-weight:bold;">✓ Foto Berhasil Ditangkap</p>
+      </div>
+    </div>
+
+    <button class="btn" type="button" onclick="simpanPresensi()">Simpan Presensi</button>
+  </div>
+
+  <!-- REKAP RIWAYAT PRESENSI -->
+  <h3 style="margin-top: 30px;">Riwayat Presensi Kelompok</h3>
+  <div id="riwayatList">
+    <!-- Data presensi akan muncul di sini secara otomatis -->
+  </div>
+
+  <script>
+    let streamInstance = null;
+    let fotoBase64 = "";
+
+    async function startCamera() {
+      document.getElementById('camBox').style.display = 'block';
+      document.getElementById('btnKamera').style.display = 'none';
+      try {
+        streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        document.getElementById('video').srcObject = streamInstance;
+      } catch (err) {
+        alert("Gagal membuka kamera. Pastikan izin kamera aktif!");
+      }
+    }
+
+    function takeSnapshot() {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      fotoBase64 = canvas.toDataURL('image/png');
+      document.getElementById('photoResult').src = fotoBase64;
+      document.getElementById('previewBox').style.display = 'block';
+      
+      // Matikan kamera
+      if (streamInstance) streamInstance.getTracks().forEach(track => track.stop());
+      document.getElementById('camBox').style.display = 'none';
+    }
+
+    function simpanPresensi() {
+      const nama = document.getElementById('namaAnggota').value;
+      const jurnal = document.getElementById('jurnal').value;
+
+      if (!nama) return alert("Pilih nama anggota terlebih dahulu!");
+      if (!fotoBase64) return alert("Ambil foto bukti kehadiran terlebih dahulu!");
+
+      const tgl = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      // Buat Elemen Riwayat Baru
+      const html = `
+        <div class="entry-card">
+          <div class="entry-header">
+            <span style="color:var(--primary);">${nama}</span>
+            <span style="font-size:0.75rem; color:#64748b;">${tgl}</span>
+          </div>
+          <p style="margin:4px 0; font-size:0.9rem;"><strong>Jurnal:</strong> ${jurnal || '-'}</p>
+          <img src="${fotoBase64}" class="entry-photo" alt="Bukti Foto">
+        </div>
+      `;
+
+      document.getElementById('riwayatList').insertAdjacentHTML('afterbegin', html);
+
+      // Reset Form
+      document.getElementById('jurnal').value = '';
+      document.getElementById('namaAnggota').value = '';
+      document.getElementById('previewBox').style.display = 'none';
+      document.getElementById('btnKamera').style.display = 'block';
+      fotoBase64 = "";
+      alert("Presensi berhasil dicatat!");
+    }
+  </script>
+
+</body>
+</html>

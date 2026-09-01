@@ -236,15 +236,26 @@
       }
     }
 
-    function takeSnapshot() {
+        function takeSnapshot() {
       const video = document.getElementById('video');
       const canvas = document.getElementById('canvas');
       const context = canvas.getContext('2d');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
       
-      fotoBase64 = canvas.toDataURL('image/png');
+      // Batasi ukuran foto agar data tidak terlalu berat saat dikirim ke Sheets
+      const maxDim = 600;
+      let width = video.videoWidth;
+      let height = video.videoHeight;
+      if (width > height) {
+        if (width > maxDim) { height *= maxDim / width; width = maxDim; }
+      } else {
+        if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);
+      
+      fotoBase64 = canvas.toDataURL('image/jpeg', 0.6); // Kompres format ke JPEG kualitas 60%
       document.getElementById('photoResult').src = fotoBase64;
       document.getElementById('previewBox').style.display = 'block';
       

@@ -5,119 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Presensi MBKM MAN TMG 2026</title>
   <style>
-    :root {
-      --primary: #2563eb;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-    }
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 0 16px;
-      background: var(--bg);
-      color: var(--text);
-    }
-    header {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
-      text-align: center;
-    }
+    :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; max-width: 800px; margin: 20px auto; padding: 0 16px; background: var(--bg); color: var(--text); }
+    header { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
     h1 { margin: 0 0 6px 0; font-size: 1.4rem; }
     p { margin: 0; color: #64748b; font-size: 0.9rem; }
-    
-    .card {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
-    }
+    .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
     .form-group { margin-bottom: 14px; }
     label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; }
-    select, input, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
-    input[readonly] {
-      background-color: #f1f5f9;
-      color: #475569;
-      font-weight: bold;
-      cursor: not-allowed;
-    }
-
-    .notice-libur {
-      background: #fef2f2;
-      border: 1px solid #fca5a5;
-      color: #991b1b;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 16px;
-      display: none;
-    }
-
-    /* Camera Section */
-    .camera-box {
-      background: #000;
-      border-radius: 8px;
-      overflow: hidden;
-      text-align: center;
-      margin-top: 8px;
-    }
+    select, input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+    input[readonly] { background-color: #f1f5f9; color: #475569; font-weight: bold; cursor: not-allowed; }
+    .notice-libur { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-align: center; margin-bottom: 16px; display: none; }
+    .camera-box { background: #000; border-radius: 8px; overflow: hidden; text-align: center; margin-top: 8px; }
     video, canvas { width: 100%; max-height: 300px; object-fit: cover; }
     canvas { display: none; }
-    
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 8px;
-    }
-    .btn:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-    }
+    .btn { background: var(--primary); color: white; border: none; padding: 12px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 8px; }
+    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
     .btn-secondary { background: #64748b; }
-    
-    /* Daftar Riwayat Absensi */
-    .entry-card {
-      background: var(--card);
-      padding: 16px;
-      border-radius: 10px;
-      border-left: 4px solid var(--primary);
-      margin-bottom: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
-    .entry-header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-    .entry-photo {
-      width: 100%;
-      max-height: 250px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-top: 8px;
-    }
+    .entry-card { background: var(--card); padding: 16px; border-radius: 10px; border-left: 4px solid var(--primary); margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .entry-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
+    .entry-photo { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -127,7 +34,6 @@
     <p>Kelompok 11 Anggota</p>
   </header>
 
-  <!-- FORM INPUT PRESENSI -->
   <div class="card">
     <h3 style="margin-top:0;">Form Absensi Harian</h3>
     
@@ -188,15 +94,12 @@
     <button class="btn" type="button" id="btnKirim" onclick="simpanPresensi()">Simpan Presensi</button>
   </div>
 
-  <!-- REKAP RIWAYAT PRESENSI -->
   <h3 style="margin-top: 30px;">Riwayat Presensi Kelompok</h3>
-  <div id="riwayatList">
-    <!-- Data presensi lokal akan muncul di sini -->
-  </div>
+  <div id="riwayatList"></div>
 
   <script>
-    // PASTE LINK /exec DARI GOOGLE APPS SCRIPT KAMU DI DALAM TANDA PETIK DI BAWAH INI
-    const GOOGLE_SCRIPT_URL = ""; 
+    // MASUKKAN LINK /exec KAMU DI BAWAH INI
+    const GOOGLE_SCRIPT_URL = "PASANG_LINK_EXEC_KAMU_DI_SINI"; 
 
     let streamInstance = null;
     let fotoBase64 = "";
@@ -204,9 +107,7 @@
     window.onload = function() {
       const sekarang = new Date();
       const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const tanggalFormat = sekarang.toLocaleDateString('id-ID', opsiTanggal);
-      
-      document.getElementById('tanggalOtomatis').value = tanggalFormat;
+      document.getElementById('tanggalOtomatis').value = sekarang.toLocaleDateString('id-ID', opsiTanggal);
 
       if (sekarang.getDay() === 0) {
         document.getElementById('noticeLibur').style.display = 'block';
@@ -236,13 +137,13 @@
       }
     }
 
-        function takeSnapshot() {
+    // FOTO DIKOMPRES OTOMATIS SUPAYA GA DITOLAK GOOGLE SHEETS
+    function takeSnapshot() {
       const video = document.getElementById('video');
       const canvas = document.getElementById('canvas');
       const context = canvas.getContext('2d');
       
-      // Batasi ukuran foto agar data tidak terlalu berat saat dikirim ke Sheets
-      const maxDim = 600;
+      const maxDim = 400; // Ukuran diperkecil ke 400px
       let width = video.videoWidth;
       let height = video.videoHeight;
       if (width > height) {
@@ -255,7 +156,7 @@
       canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
       
-      fotoBase64 = canvas.toDataURL('image/jpeg', 0.6); // Kompres format ke JPEG kualitas 60%
+      fotoBase64 = canvas.toDataURL('image/jpeg', 0.5); // Kompres JPEG 50%
       document.getElementById('photoResult').src = fotoBase64;
       document.getElementById('previewBox').style.display = 'block';
       
@@ -275,7 +176,6 @@
       const jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const tglLengkap = `${tanggal} (${jam} WIB)`;
 
-      // 1. Tampilkan riwayat di tampilan web
       const html = `
         <div class="entry-card">
           <div class="entry-header">
@@ -288,31 +188,17 @@
       `;
       document.getElementById('riwayatList').insertAdjacentHTML('afterbegin', html);
 
-      // 2. KIRIM DATA KE GOOGLE SHEETS
-      if (GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbyaffUFdV379dSvRY3BO6d-Ji4YjsihuOIzS3SsdcrTSaabYv7FAOFxPC-qHIbwl53d/exec") {
+      if (GOOGLE_SCRIPT_URL !== "" && GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbyaffUFdV379dSvRY3BO6d-Ji4YjsihuOIzS3SsdcrTSaabYv7FAOFxPC-qHIbwl53d/exec") {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
           mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain"
-          },
-          body: JSON.stringify({ 
-            tanggal: tglLengkap, 
-            nama: nama, 
-            email: email, 
-            jurnal: jurnal, 
-            foto: fotoBase64 
-          })
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ tanggal: tglLengkap, nama: nama, email: email, jurnal: jurnal, foto: fotoBase64 })
         })
-        .then(() => {
-          console.log("Data berhasil dikirim ke Sheets!");
-        })
-        .catch(err => {
-          console.log("Gagal kirim data: ", err);
-        });
+        .then(() => console.log("Berhasil terkirim"))
+        .catch(err => console.log("Error:", err));
       }
 
-      // Reset form setelah simpan
       document.getElementById('jurnal').value = '';
       document.getElementById('namaAnggota').value = '';
       document.getElementById('emailAnggota').value = '';
@@ -322,6 +208,5 @@
       alert("Presensi berhasil dicatat!");
     }
   </script>
-
 </body>
 </html>
